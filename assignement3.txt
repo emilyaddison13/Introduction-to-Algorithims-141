@@ -1,0 +1,329 @@
+Script started on Sun, Mar 12, 2017 11:11:42 PM
+]0;~/fall16/cs140
+[32memily@DESKTOP-O4OM641 [33m~/fall16/cs140[0m
+$ cat assignement3.c
+/*
+Emily Addison
+104553525
+March 12th, 2017
+Assignement 3
+*/
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+#define LINES 10
+#define LENGTH 81
+
+
+void letterAnalysis(int intlines, char input[LINES][LENGTH]);
+int wordLengthAnalysis( char input[LINES][LENGTH], int intlines,int n);
+void wordAnalysis(char input[LINES][LENGTH],int intlines);
+
+
+int main()
+{
+	int intlines, wordlength; 
+	char input [LINES][LENGTH];
+  scanf("%d", &intlines);//The next three lines of code are used to open the text file when inputed by the user in cygwin
+  for (int i=0;i<intlines;i++)
+  {
+	scanf(" %[^\n]s", input[i]);
+  }
+	
+  letterAnalysis(intlines, input);//initializes the first function passing two parameters through it
+  
+  for (int i=1; i<20;i++) //a for loop for initializing the word length analysis function, the for loop also prints the results into a table 
+  {
+	  wordlength= wordLengthAnalysis(input,intlines,i);
+	  if(wordlength >0)
+	  {
+		  printf("%-2d  word",wordlength); //prints results to the left side 
+		  if(wordlength > 1)
+			printf("s");
+		  printf(" the length of %d\n",i);
+	  }
+  }
+  wordAnalysis(input, intlines); //initializes final function
+    return 0;
+}
+
+//purpose: to count how many times each letter a-z appears in the given text
+//Input: text file
+//Output: letter count
+void letterAnalysis(int intlines, char input[LINES][LENGTH])
+{
+	int alphabet[26]={}; //creates an array of all letters from the alphabet 
+	
+	for (int i=0; i<intlines; i++) //runs each letter in the text file array to count how many of each letter there is 
+	{
+		int j= 0;
+		while(input[i][j] != '\0')
+		{
+			if(isalpha(input[i][j]))
+				alphabet[tolower(input[i][j])-'a']++;
+			
+			j++;
+		}
+	}
+	printf("The total letter count is:\n "); //prints the total number of each letter counted 
+	int i=0;
+	while(i<26)
+	{
+		printf("%c: %d\n", i+'a', alphabet[i]);
+		i++;
+	}
+	return;
+}
+//Purpose: to find the length of words in the text file
+//Input: text file with length of number lines
+//Output: the length of the word to the main fuction
+int wordLengthAnalysis( char input[LINES][LENGTH], int intlines,int n)
+
+{
+	char temp[LINES][LENGTH];
+	char *token;
+	int wordlength = 0;
+	const char *delim={" \n\r"};
+	for (int i = 0; i<intlines;i++)
+	{
+		strcpy(temp[i],input[i]); //breaks down each word in order to count the letters inside of the word 
+		token = strtok(temp[i],delim);
+		while(token!=NULL)
+		{
+			if(strlen(token)==n) //adds number to counter to display each time a one letter, two letter... word is shown 
+				wordlength++;
+			token=strtok(NULL,delim);
+		}
+	}
+	return wordlength; //returns word length to the main function in order to print results
+}
+
+//purpose: to count the times each word is seen in the text file
+//Input: text file
+//Output: number of times each word is seen
+void wordAnalysis(char input[LINES][LENGTH],int intlines)
+{
+	char temp[LINES][LENGTH];
+	char *token;
+	char *tokenarray[200];
+	int wordc = 0, wordnum;
+	const char *delim={" \n\r"};
+	for (int i = 0; i<intlines;i++)
+	{
+		strcpy(temp[i],input[i]); //breaks down word to compare to others to count each time the same word is shown in the text
+		token = strtok(temp[i],delim);
+		while(token!=NULL)
+		{
+			tokenarray[wordc]=token;
+			token = strtok(NULL,delim);
+				wordc++;
+		}
+
+	}
+	for(int i =0;i<wordc;i++)	
+	{
+		wordnum = 0;
+		for(int j = 0;j<wordc;j++)
+		{
+			if (!strcmp(tokenarray[i],tokenarray[j]))
+			
+				wordnum++;
+			
+		}
+	
+		printf (" \"%s\" appeared %d times",tokenarray[i],wordnum); //prints each time the same word is displayed
+	
+		if(wordc>1)printf("s"); //spaces results 
+		printf("\n");
+	}
+}
+
+
+
+
+
+
+  
+]0;~/fall16/cs140
+[32memily@DESKTOP-O4OM641 [33m~/fall16/cs140[0m
+$ cat hey.txt
+4
+Mr. and Mrs. Dursley, of number four, Privet Drive, were proud to say
+that they were perfectly normal, thank you very much. They were the last
+people you'd expect to be involved in anything strange or mysterious,
+because they just didn't hold with such nonsense.
+]0;~/fall16/cs140
+[32memily@DESKTOP-O4OM641 [33m~/fall16/cs140[0m
+$ cc assignement3.c
+]0;~/fall16/cs140
+[32memily@DESKTOP-O4OM641 [33m~/fall16/cs140[0m
+$ ./.a[K[Ka.exe<hey.txt <hey.txt
+The total letter count is:
+ a: 9
+b: 3
+c: 5
+d: 9
+e: 29
+f: 3
+g: 2
+h: 11
+i: 8
+j: 1
+k: 1
+l: 7
+m: 6
+n: 13
+o: 14
+p: 6
+q: 0
+r: 17
+s: 12
+t: 19
+u: 11
+v: 5
+w: 4
+x: 1
+y: 11
+z: 0
+6   words the length of 2
+5   words the length of 3
+14  words the length of 4
+5   words the length of 5
+6   words the length of 6
+3   words the length of 7
+3   words the length of 8
+2   words the length of 9
+1   word the length of 11
+ "Mr." appeared 1 timess
+ "and" appeared 1 timess
+ "Mrs." appeared 1 timess
+ "Dursley," appeared 1 timess
+ "of" appeared 1 timess
+ "number" appeared 1 timess
+ "four," appeared 1 timess
+ "Privet" appeared 1 timess
+ "Drive," appeared 1 timess
+ "were" appeared 3 timess
+ "proud" appeared 1 timess
+ "to" appeared 2 timess
+ "say" appeared 1 timess
+ "that" appeared 1 timess
+ "they" appeared 2 timess
+ "were" appeared 3 timess
+ "perfectly" appeared 1 timess
+ "normal," appeared 1 timess
+ "thank" appeared 1 timess
+ "you" appeared 1 timess
+ "very" appeared 1 timess
+ "much." appeared 1 timess
+ "They" appeared 1 timess
+ "were" appeared 3 timess
+ "the" appeared 1 timess
+ "last" appeared 1 timess
+ "people" appeared 1 timess
+ "you'd" appeared 1 timess
+ "expect" appeared 1 timess
+ "to" appeared 2 timess
+ "be" appeared 1 timess
+ "involved" appeared 1 timess
+ "in" appeared 1 timess
+ "anything" appeared 1 timess
+ "strange" appeared 1 timess
+ "or" appeared 1 timess
+ "mysterious," appeared 1 timess
+ "because" appeared 1 timess
+ "they" appeared 2 timess
+ "just" appeared 1 timess
+ "didn't" appeared 1 timess
+ "hold" appeared 1 timess
+ "with" appeared 1 timess
+ "such" appeared 1 timess
+ "nonsense." appeared 1 timess
+]0;~/fall16/cs140
+[32memily@DESKTOP-O4OM641 [33m~/fall16/cs140[0m
+$ ls -l
+total 372
+-rwxr-xr-x 1 emily emily 61371 Mar 12 23:12 a.exe
+-rwxr-xr-x 1 emily emily   399 Mar 12 15:18 a.exe.stackdump
+-rwxr-xr-x 1 emily emily  1653 Nov  4 13:48 a_3q2.c
+-rwxr-xr-x 1 emily emily   566 Nov  4 13:47 a_3q3.c
+-rwxr-xr-x 1 emily emily   280 Nov  4 13:47 a_3q4a.c
+-rwxr-xr-x 1 emily emily   277 Nov  4 13:47 a_3q4b.c
+-rwxr-xr-x 1 emily emily   209 Nov  4 13:48 a_3q4c.c
+-rwxr-xr-x 1 emily emily   309 Nov  4 16:53 a_3q4d.c
+-rwxr-xr-x 1 emily emily   409 Sep 29 11:57 'a1 date.c'
+-rwxr-xr-x 1 emily emily   409 Sep 30 10:43 a1_date.c
+-rwxr-xr-x 1 emily emily   691 Oct 21 12:02 a2_4integers.c
+-rwxr-xr-x 1 emily emily   635 Oct 21 12:19 a2_addfrac.c
+-rwxr-xr-x 1 emily emily   356 Oct 21 12:01 a2_octal.c
+-rwxr-xr-x 1 emily emily   372 Oct 21 12:17 a2_question2.c
+-rwxr-xr-x 1 emily emily   587 Nov  8 10:17 a2_question4.c
+-rwxr-xr-x 1 emily emily  1786 Jan 29 15:34 a2a2.c
+-rwxr-xr-x 1 emily emily   521 Nov  4 14:11 'a3_epsilon0 .c'
+-rwxr-xr-x 1 emily emily   512 Nov  4 13:50 a3_epsilon1.c
+-rwxr-xr-x 1 emily emily  1909 Nov 17 12:23 a3_q2.c
+-rwxr-xr-x 1 emily emily   494 Nov  4 14:02 a3question1.c
+-rwxr-xr-x 1 emily emily  1562 Feb 12 21:28 a4_q2.c
+-rwxr-xr-x 1 emily emily   838 Nov 18 12:03 a4_q6.c
+-rwxr-xr-x 1 emily emily   589 Dec  2 22:17 a5_gcd_recursive.c
+-rwxr-xr-x 1 emily emily   635 Oct 21 12:19 addfrac.c
+-rwxr-xr-x 1 emily emily   667 Feb 15 13:45 arraytest.c
+-rwxr-xr-x 1 emily emily   181 Sep 29 11:43 assign1.c
+-rwxr-xr-x 1 emily emily  1518 Jan 29 23:29 'Assignement1 .c'
+-rwxr-xr-x 1 emily emily   991 Feb 12 21:28 assignement1a2.c
+-rwxr-xr-x 1 emily emily  4137 Feb 12 21:28 Assignement2.c
+-rw-r--r-- 1 emily emily 65536 Feb 12 21:55 Assignement2.txt
+-rwxr-xr-x 1 emily emily  3758 Mar 12 23:10 assignement3.c
+-rw-r--r-- 1 emily emily     0 Mar 12 23:11 assignement3.txt
+-rw-r--r-- 1 emily emily 36389 Feb 12 21:51 assignemet2.txt
+-rwxr-xr-x 1 emily emily   456 Feb 15 15:53 'Emily Addison.txt'
+-rwxr-xr-x 1 emily emily   902 Oct 28 11:55 expEval.c
+-rwxr-xr-x 1 emily emily   533 Nov 24 13:30 functions.c
+-rwxr-xr-x 1 emily emily   537 Oct 31 09:46 grade.c
+-rwxr-xr-x 1 emily emily   618 Oct 28 12:31 guessgame.c
+-rwxr-xr-x 1 emily emily   821 Nov  4 10:45 guessgame1.c
+-rwxr-xr-x 1 emily emily   270 Mar 12 12:12 hey.txt
+-rwxr-xr-x 1 emily emily     8 Jan 29 22:52 input.txt
+-rwxr-xr-x 1 emily emily  2550 Jan 25 17:54 l1a2.c
+-rwxr-xr-x 1 emily emily  1112 Nov 24 17:25 lab_8.c
+-rwxr-xr-x 1 emily emily  2805 Feb  1 17:56 lab2_a2.c
+-rwxr-xr-x 1 emily emily   677 Oct  7 11:31 lab2part1.c
+-rwxr-xr-x 1 emily emily   646 Oct  7 09:51 lab2part2.c
+-rwxr-xr-x 1 emily emily   763 Oct 20 18:22 lab3.c
+-rwxr-xr-x 1 emily emily  3399 Feb  8 18:01 lab3_a2.c
+-rwxr-xr-x 1 emily emily  1603 Feb 15 17:59 lab4__a2.c
+-rwxr-xr-x 1 emily emily   259 Feb 13 15:46 lab4_a2.c
+-rwxr-xr-x 1 emily emily   898 Mar  6 17:45 lab5.c
+-rwxr-xr-x 1 emily emily  1416 Mar  1 17:42 lab52.c
+-rwxr-xr-x 1 emily emily   957 Nov 11 11:10 lab6.c
+-rwxr-xr-x 1 emily emily  2042 Mar  8 15:21 lab6a2.c
+-rwxr-xr-x 1 emily emily   961 Nov 18 11:31 lab7.c
+-rwxr-xr-x 1 emily emily   529 Nov 24 13:29 lab8.c
+-rwxr-xr-x 1 emily emily  1053 Nov 25 10:32 lab8_1.c
+-rwxr-xr-x 1 emily emily  1209 Feb 12 21:28 lab9.c
+-rwxr-xr-x 1 emily emily   129 Sep 30 11:36 modified_pun.c
+-rwxr-xr-x 1 emily emily   236 Mar  1 13:15 pointerstest.c
+-rwxr-xr-x 1 emily emily   871 Mar 11 14:00 practice.c
+-rwxr-xr-x 1 emily emily   838 Nov 18 13:11 Repdigit.c
+-rwxr-xr-x 1 emily emily  1361 Mar 11 13:54 stingfun.c
+-rwxr-xr-x 1 emily emily  1080 Feb  8 00:56 stuff.c
+-rwxr-xr-x 1 emily emily  3832 Mar 12 17:16 stuff1.c
+-rwxr-xr-x 1 emily emily   773 Mar 12 17:20 stuff2.c
+-rwxr-xr-x 1 emily emily   475 Sep 30 11:35 swap.c
+-rwxr-xr-x 1 emily emily   177 Mar 12 13:19 test.txt
+-rwxr-xr-x 1 emily emily   329 Feb 12 21:28 test2.c
+-rwxr-xr-x 1 emily emily   402 Dec  5 14:04 test3.c
+-rwxr-xr-x 1 emily emily   159 Nov  1 13:05 testt.c
+-rw-r--r-- 1 emily emily 10493 Mar 12 17:25 testtt.txt
+-rwxr-xr-x 1 emily emily  1487 Mar 11 15:21 text.txt
+-rwxr-xr-x 1 emily emily   549 Feb 24 12:48 webpage.html
+-rwxr-xr-x 1 emily emily   173 Feb 24 12:00 webpage.xml
+]0;~/fall16/cs140
+[32memily@DESKTOP-O4OM641 [33m~/fall16/cs140[0m
+$ exit
+exit
+
+Script done on Sun, Mar 12, 2017 11:14:04 PM
